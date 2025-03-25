@@ -1,4 +1,5 @@
 import 'tailwindcss/tailwind.css';
+import { Link } from 'react-router-dom';
 
 export default function Header() {
   return (
@@ -9,7 +10,7 @@ export default function Header() {
           <li><a href="#home" className="hover:text-gray-400">Home</a></li>
           <li><a href="#about" className="hover:text-gray-400">About</a></li>
           <li><a href="#services" className="hover:text-gray-400">Services</a></li>
-          <li><a href="#contact" className="hover:text-gray-400">Contact</a></li>
+          <li><Link to="/contact" className="hover:text-gray-400">Contact</Link></li>
         </ul>
       </nav>
     </header>

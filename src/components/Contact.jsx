@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Swal from 'sweetalert2';
+import axios from 'axios';
 
 const Contact = () => {
   const [name, setName] = useState('');
@@ -76,31 +77,26 @@ const Contact = () => {
     }
 
     try {
-      const response = await fetch('https://staterreactwithtailwind.onrender.com/api/send-email', {
-        method: 'POST',
-        body: formData,
+      const response = await axios.post('http://localhost:3001/api/send-email', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
       });
 
-      const responseText = await response.text();
-      console.log('Response text:', responseText);
-
-      if (response.ok) {
+      if (response.status === 200) {
         setSubmitted(true);
         setName('');
         setEmail('');
         setPhone('');
         setMessage('');
         setFile(null);
-        Swal.fire('Success', 'Email sent successfully.', 'success');
+        Swal.fire('Success', 'Form submitted successfully!', 'success');
       } else {
-        console.error('Error response:', responseText);
         setError('Error sending email');
-        Swal.fire('Error', 'Error sending email', 'error');
+        Swal.fire('Error', 'Failed to send email.', 'error');
       }
     } catch (error) {
       console.error('Error sending email:', error);
       setError('Error sending email');
-      Swal.fire('Error', 'Error sending email', 'error');
+      Swal.fire('Error', 'Failed to send email.', 'error');
     } finally {
       setLoading(false);
     }
@@ -191,7 +187,7 @@ const Contact = () => {
             type="submit"
             className="w-full py-2 px-4 bg-indigo-600 text-white font-semibold rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
-            Submit
+            {loading ? 'Submitting...' : 'Submit'}
           </button>
         </div>
       </form>

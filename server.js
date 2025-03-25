@@ -32,26 +32,22 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-app.post('/api/send-email', upload.single('file'), (req, res) => {
-  const { name, email, phone, message } = req.body;
-  const file = req.file;
+app.post('/api/send-email', upload.single('file'), async (req, res) => {
+  const { name, email, phone, message } = req.body; // Text fields from FormData
+  const file = req.file; // Uploaded file
 
   console.log('File:', file); // Debugging information
 
   const mailOptions = {
     from: 'sasitharani@gmail.com',
-    to: ['sasitharani@gmail.com', 'hrd@insphile.in'], // add the recipient's email addresses
-    subject: 'Insphile-New Contact Form Submission',
+    to: ['sasitharani@gmail.com'], // Add the recipient's email addresses
+    subject: 'Contact Form Submission',
     text: `Name: ${name}\nEmail: ${email}\nPhone: ${phone}\nMessage: ${message}`,
-    attachments: file ? [{ filename: file.originalname, path: file.path }] : [],
+    attachments: file ? [{ filename: file.originalname, path: file.path }] : [], // Attach file if present
   };
 
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      console.error('Error sending email:', error);
-      return res.status(500).json({ error: 'Error sending email', details: error.message });
-    }
-    console.log('Email sent:', info.response);
+  try {
+    await transporter.sendMail(mailOptions);
     res.status(200).json({ message: 'Email sent successfully.' });
 
     // Delete the file after sending the email
@@ -62,7 +58,10 @@ app.post('/api/send-email', upload.single('file'), (req, res) => {
         }
       });
     }
-  });
+  } catch (error) {
+    console.error('Error sending email:', error);
+    res.status(500).json({ error: 'Error sending email', details: error.message });
+  }
 });
 
 app.use((err, req, res, next) => {
