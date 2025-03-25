@@ -77,7 +77,7 @@ const Contact = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:3001/api/send-email', formData, {
+      const response = await axios.post('https://feedbackformtemplate.onrender.com/api/send-email', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
